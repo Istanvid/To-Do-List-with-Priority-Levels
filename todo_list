@@ -1,0 +1,38 @@
+# todo_list.py
+
+import json
+
+def add_task(task, priority="low"):
+    tasks = load_tasks()
+    tasks.append({"task": task, "priority": priority, "done": False})
+    save_tasks(tasks)
+
+def mark_done(task):
+    tasks = load_tasks()
+    for t in tasks:
+        if t["task"] == task:
+            t["done"] = True
+    save_tasks(tasks)
+
+def show_tasks():
+    tasks = load_tasks()
+    for t in sorted(tasks, key=lambda x: x["priority"]):
+        status = "✔" if t["done"] else "✘"
+        print(f"[{status}] {t['task']} ({t['priority']})")
+
+def load_tasks():
+    try:
+        with open("tasks.json", "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+def save_tasks(tasks):
+    with open("tasks.json", "w") as file:
+        json.dump(tasks, file, indent=4)
+
+# Sample usage
+add_task("Finish Python project", "high")
+add_task("Clean the house", "medium")
+mark_done("Finish Python project")
+show_tasks()
